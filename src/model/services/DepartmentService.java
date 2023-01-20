@@ -1,21 +1,18 @@
 package model.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.DAOFactory;
+import model.dao.DepartmentDAO;
 import model.entities.Department;
 
 public class DepartmentService {
 
+	private DepartmentDAO dao = DAOFactory.creatDepartmentDAO();
+
 	// Mook
 	public List<Department> findAll() {
-		List<Department> list = new ArrayList<>();
-		list.add(new Department(1, "Books"));
-		list.add(new Department(2, "Computers"));
-		list.add(new Department(3, "Eletronics"));
-		list.add(new Department(4, "Automobile"));
-
-		return list;
+		return dao.findAll();
 	}
 
 }

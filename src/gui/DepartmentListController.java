@@ -39,17 +39,13 @@ public class DepartmentListController implements Initializable {
 		System.out.println("DepartmentListController.onBtNewAction()");
 	}
 
+	public void setService(DepartmentService service) {
+		this.service = service;
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializeNodes();
-
-		// test
-		this.service = new DepartmentService();
-		updateTableView();
-	}
-
-	public void setService(DepartmentService service) {
-		this.service = service;
 	}
 
 	private void initializeNodes() {

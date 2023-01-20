@@ -7,10 +7,10 @@ import java.util.Objects;
 public class Department implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
-
+	
 	private Integer id;
 	private String name;
-
+	
 	public Department() {
 		super();
 	}
@@ -58,5 +58,5 @@ public class Department implements Serializable {
 	public String toString() {
 		return "Department [id=" + id + ", name=" + name + "]";
 	}
-
+	
 }
