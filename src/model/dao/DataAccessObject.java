@@ -2,7 +2,7 @@ package model.dao;
 
 import java.util.List;
 
-public interface DAO<T> {
+public interface DataAccessObject<T> {
 
 	void insert(T obj);
 
