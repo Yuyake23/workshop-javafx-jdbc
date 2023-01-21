@@ -10,7 +10,6 @@ public class DepartmentService {
 
 	private DepartmentDAO dao = DAOFactory.creatDepartmentDAO();
 
-	// Mook
 	public List<Department> findAll() {
 		return dao.findAll();
 	}
