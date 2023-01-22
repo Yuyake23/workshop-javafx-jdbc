@@ -34,15 +34,14 @@ public class DepartmentFormController implements Initializable {
 	}
 
 	private Department getFormData() {
-		validateFormData();
 		Integer id = Utils.tryParseToInt(txtId.getText());
 		String name = txtName.getText();
+		validateFormData(name);
 		return new Department(id, name);
 	}
 
-	private void validateFormData() {
+	private void validateFormData(String name) {
 		ValidationException e = new ValidationException("Validation error");
-		String name = txtName.getText();
 
 		if (name == null || name.isBlank())
 			e.addError("name", "Field cannot be empty");
