@@ -22,4 +22,8 @@ public class DepartmentService {
 		}
 	}
 
+	public void deleteById(Integer id) {
+		dao.deleteById(id);
+	}
+
 }

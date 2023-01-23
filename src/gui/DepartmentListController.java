@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DBException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -18,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -35,6 +38,12 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		this.service = service;
 	}
 
+	private Department getSelectedDepartment() {
+		int i = this.tableViewDepartments.getSelectionModel().getFocusedIndex();
+		Department obj = this.tableViewDepartments.getItems().get(i);
+		return obj;
+	}
+
 	// Components
 	@FXML
 	private TableView<Department> tableViewDepartments;
@@ -49,6 +58,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private Button btNew;
 	@FXML
 	private Button btEdit;
+	@FXML
+	private Button btDelete;
 
 	// Actions
 	@FXML
@@ -60,10 +71,27 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 	@FXML
 	public void onBtEditAction(ActionEvent event) {
-		int i = this.tableViewDepartments.getSelectionModel().getFocusedIndex();
-		System.out.println(i);
-		Department obj = this.tableViewDepartments.getItems().get(i);
+		Department obj = getSelectedDepartment();
 		createDialogForm("/gui/DepartmentForm.fxml", obj, Utils.currentStage(event));
+	}
+
+	@FXML
+	public void onBtDeleteAction(ActionEvent event) {
+		if (service == null) {
+			throw new IllegalStateException("Service is null");
+		}
+		Department obj = getSelectedDepartment();
+
+		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation",
+				"Are you sure to delete %s?".formatted(obj.getName()));
+		if (result.get() == ButtonType.OK) {
+			try {
+				service.deleteById(obj.getId());
+				updateTableView();
+			} catch (DBException e) {
+				Alerts.showAlert("Error removing object", e.getMessage(), AlertType.ERROR);
+			}
+		}
 	}
 
 	@Override
@@ -107,6 +135,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			throw new IllegalStateException("service is null");
 		}
 		List<Department> list = service.findAll();
+		list.sort((d1, d2) -> d1.getId() - d2.getId());
 		this.obsList = FXCollections.observableArrayList(list);
 		this.tableViewDepartments.setItems(obsList);
 	}

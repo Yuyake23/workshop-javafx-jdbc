@@ -39,6 +39,7 @@
             <ToolBar GridPane.columnIndex="1">
               <items>
                 <Button fx:id="btEdit" mnemonicParsing="false" onAction="#onBtEditAction" prefWidth="50.0" text="Edit" />
+                  <Button fx:id="btDelete" mnemonicParsing="false" onAction="#onBtDeleteAction" prefWidth="50.0" text="Delete" />
               </items>
             </ToolBar>
          </children>

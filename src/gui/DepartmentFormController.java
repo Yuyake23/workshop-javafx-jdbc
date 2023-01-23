@@ -40,7 +40,7 @@ public class DepartmentFormController implements Initializable {
 		return new Department(id, name);
 	}
 
-	private void validateFormData(String name) {
+	private static void validateFormData(String name) {
 		ValidationException e = new ValidationException("Validation error");
 
 		if (name == null || name.isBlank())
@@ -82,7 +82,7 @@ public class DepartmentFormController implements Initializable {
 			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
 		} catch (DBException e) {
-			Alerts.showAlert("DB Exception", "Error saving object", e.getMessage(), AlertType.ERROR);
+			Alerts.showAlert("Error saving object", e.getMessage(), AlertType.ERROR);
 		} catch (ValidationException e) {
 			setErrorsMessages(e.getErrors());
 		}
