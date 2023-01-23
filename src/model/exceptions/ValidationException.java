@@ -8,17 +8,17 @@ public class ValidationException extends RuntimeException {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	private Map<String, String> errors = new HashMap<>();
+	private Map<Object, String> errors = new HashMap<>();
 
 	public ValidationException(String msg) {
 		super(msg);
 	}
 
-	public Map<String, String> getErrors() {
+	public Map<? extends Object, String> getErrors() {
 		return errors;
 	}
 
-	public void addError(String fieldName, String errorMessage) {
+	public void addError(Object fieldName, String errorMessage) {
 		this.errors.put(fieldName, errorMessage);
 	}
 

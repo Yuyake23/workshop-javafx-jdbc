@@ -115,11 +115,8 @@ public class DepartmentFormController implements Initializable {
 		txtName.setText(entity.getName());
 	}
 
-	private void setErrorsMessages(Map<String, String> errors) {
-		errors.forEach((field, error) -> {
-			if (field.equals("name"))
-				labelErrorName.setText(error);
-		});
+	private void setErrorsMessages(Map<?, String> errors) {
+		errors.forEach((field, error) -> ((Label) field).setText(error));
 	}
 
 }

@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -49,22 +51,33 @@ public class SellerFormController implements Initializable {
 	}
 
 	private Seller getFormData() {
-		Integer id = Utils.tryParseToInt(txtId.getText());
-		String name = txtName.getText();
-		String email = txtEmail.getText();
-		Seller obj = new Seller();
-		validateFormData(name);
-		obj.setId(id);
-		obj.setName(name);
-		obj.setEmail(email);
-		return obj;
+		validateFormData();
+		var id = Utils.tryParseToInt(txtId.getText());
+		var name = txtName.getText();
+		var email = txtEmail.getText();
+		var birthDate = Date.from(Instant.from(dpBirthDate.getValue().atStartOfDay(ZoneId.systemDefault())));
+		var baseSalary = Utils.tryParseToDouble(txtBaseSalary.getText());
+		var department = comboBoxDepartment.getValue();
+		return new Seller(id, name, email, birthDate, baseSalary, department);
 	}
 
-	private static void validateFormData(String name) {
+	private void validateFormData() {
 		ValidationException e = new ValidationException("Validation error");
 
+		var name = txtName.getText();
 		if (name == null || name.isBlank())
-			e.addError("name", "Field cannot be empty");
+			e.addError(labelErrorName, "Field cannot be empty");
+
+		var email = txtEmail.getText();
+		if (email == null || email.isBlank())
+			e.addError(labelErrorEmail, "Field cannot be empty");
+
+		if (dpBirthDate.getValue() == null)
+			e.addError(labelErrorBirthDate, "Field cannot be empty");
+
+		if (Utils.tryParseToDouble(txtBaseSalary.getText()) == null)
+			e.addError(labelErrorBaseSalary, "Field cannot be empty");
+
 		if (!e.getErrors().isEmpty())
 			throw e;
 	}
@@ -115,7 +128,6 @@ public class SellerFormController implements Initializable {
 		} catch (DBException e) {
 			Alerts.showAlert("Error saving object", e.getMessage(), AlertType.ERROR);
 		} catch (ValidationException e) {
-			e.printStackTrace();
 			setErrorsMessages(e.getErrors());
 		}
 	}
@@ -168,11 +180,12 @@ public class SellerFormController implements Initializable {
 		this.comboBoxDepartment.setItems(this.departments);
 	}
 
-	private void setErrorsMessages(Map<String, String> errors) {
-		errors.forEach((field, error) -> {
-			if (field.equals("name"))
-				labelErrorName.setText(error);
-		});
+	private void setErrorsMessages(Map<?, String> errors) {
+		labelErrorName.setText("");
+		labelErrorEmail.setText("");
+		labelErrorBirthDate.setText("");
+		labelErrorBaseSalary.setText("");
+		errors.forEach((field, error) -> ((Label) field).setText(error));
 	}
 
 }

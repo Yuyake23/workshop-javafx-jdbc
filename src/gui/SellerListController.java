@@ -70,9 +70,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 	// Actions
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
-		Stage parentStage = Utils.currentStage(event);
 		Seller obj = new Seller();
-		createDialogForm("/gui/SellerForm.fxml", obj, parentStage);
+		createDialogForm("/gui/SellerForm.fxml", obj, Utils.currentStage(event));
 	}
 
 	@FXML
@@ -151,7 +150,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 		List<Seller> list = service.findAll();
 		list.sort((d1, d2) -> d1.getId() - d2.getId());
 		this.obsList = FXCollections.observableArrayList(list);
-		this.tableViewSellers.setItems(obsList);
+		this.tableViewSellers.setItems(this.obsList);
 	}
 
 	@Override
