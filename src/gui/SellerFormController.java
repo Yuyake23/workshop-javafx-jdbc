@@ -14,6 +14,8 @@ import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constrainsts;
 import gui.util.Utils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,17 +28,24 @@ import javafx.scene.control.TextField;
 import model.entities.Department;
 import model.entities.Seller;
 import model.exceptions.ValidationException;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerFormController implements Initializable {
 
 	private Seller entity;
-	private SellerService service;
+	private SellerService sellerService;
+	private DepartmentService departmentService;
 
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	public void setSeller(Seller entity) {
 		this.entity = entity;
+	}
+
+	public void setServices(SellerService sellerService, DepartmentService departmentService) {
+		this.sellerService = sellerService;
+		this.departmentService = departmentService;
 	}
 
 	private Seller getFormData() {
@@ -60,10 +69,6 @@ public class SellerFormController implements Initializable {
 			throw e;
 	}
 
-	public void setService(SellerService service) {
-		this.service = service;
-	}
-
 	public void subscribeDataChangeListener(DataChangeListener listener) {
 		this.dataChangeListeners.add(listener);
 	}
@@ -80,6 +85,7 @@ public class SellerFormController implements Initializable {
 	private TextField txtBaseSalary;
 	@FXML
 	private ComboBox<Department> comboBoxDepartment;
+	private ObservableList<Department> departments;
 	@FXML
 	private Label labelErrorName;
 	@FXML
@@ -98,17 +104,18 @@ public class SellerFormController implements Initializable {
 		if (entity == null) {
 			throw new IllegalStateException("Entity is null");
 		}
-		if (service == null) {
-			throw new IllegalStateException("Service is null");
+		if (sellerService == null) {
+			throw new IllegalStateException("SellerService is null");
 		}
 		try {
 			entity = getFormData();
-			service.saveOrUpdate(entity);
+			sellerService.saveOrUpdate(entity);
 			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
 		} catch (DBException e) {
 			Alerts.showAlert("Error saving object", e.getMessage(), AlertType.ERROR);
 		} catch (ValidationException e) {
+			e.printStackTrace();
 			setErrorsMessages(e.getErrors());
 		}
 	}
@@ -128,6 +135,7 @@ public class SellerFormController implements Initializable {
 		Constrainsts.setTextFieldMaxLength(txtName, 64);
 		Constrainsts.setTextFielDouble(txtBaseSalary);
 		Constrainsts.setTextFieldMaxLength(txtEmail, 256);
+		Utils.setComboBoxFactory(comboBoxDepartment, (Department obj) -> obj.getName());
 	}
 
 	public void updateFormData() {
@@ -145,6 +153,19 @@ public class SellerFormController implements Initializable {
 				: LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
 		Locale.setDefault(Locale.US);
 		txtBaseSalary.setText(String.format("%.2f", entity.getBaseSalary()));
+
+		if (entity.getDepartment() != null) {
+			comboBoxDepartment.setValue(entity.getDepartment());
+		}
+	}
+
+	public void loadAssociatedObjects() {
+		if (departmentService == null) {
+			throw new IllegalStateException("DepartmentService is null");
+		}
+		List<Department> list = departmentService.findAll();
+		this.departments = FXCollections.observableList(list);
+		this.comboBoxDepartment.setItems(this.departments);
 	}
 
 	private void setErrorsMessages(Map<String, String> errors) {

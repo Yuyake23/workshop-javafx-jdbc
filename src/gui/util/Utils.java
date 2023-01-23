@@ -5,13 +5,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.Function;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 public class Utils {
@@ -91,6 +96,18 @@ public class Utils {
 				}
 			}
 		});
+	}
+
+	public static <E> void setComboBoxFactory(ComboBox<E> cb, Function<E, String> how) {
+		Callback<ListView<E>, ListCell<E>> factory = lv -> new ListCell<E>() {
+			@Override
+			protected void updateItem(E item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : how.apply(item));
+			}
+		};
+		cb.setCellFactory(factory);
+		cb.setButtonCell(factory.call(null));
 	}
 
 }
