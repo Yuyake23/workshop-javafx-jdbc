@@ -33,7 +33,7 @@
          <children>
             <ToolBar>
               <items>
-                  <Button fx:id="btNew1" mnemonicParsing="false" onAction="#onBtNewAction" prefWidth="50.0" text="New" />
+                  <Button fx:id="btNew" mnemonicParsing="false" onAction="#onBtNewAction" prefWidth="50.0" text="New" />
               </items>
             </ToolBar>
             <ToolBar GridPane.columnIndex="1">
@@ -48,6 +48,9 @@
         <columns>
           <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id" />
           <TableColumn fx:id="tableColumnName" prefWidth="75.0" text="Name" />
+            <TableColumn fx:id="tableColumnEmail" prefWidth="140.0" text="Email" />
+            <TableColumn fx:id="tableColumnBirthDate" prefWidth="75.0" text="BirthDate" />
+            <TableColumn fx:id="tableColumnBaseSalary" prefWidth="75.0" text="Base Salary" />
         </columns>
       </TableView>
    </children>
