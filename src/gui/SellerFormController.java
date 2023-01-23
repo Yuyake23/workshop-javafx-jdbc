@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -76,7 +79,7 @@ public class SellerFormController implements Initializable {
 	@FXML
 	private TextField txtBaseSalary;
 	@FXML
-	private ComboBox<Department> comboBoxDepartment ;
+	private ComboBox<Department> comboBoxDepartment;
 	@FXML
 	private Label labelErrorName;
 	@FXML
@@ -122,7 +125,9 @@ public class SellerFormController implements Initializable {
 	@Override
 	public void initialize(URL uri, ResourceBundle rb) {
 		Constrainsts.setTextFieldInteger(txtId);
-		Constrainsts.setTextFieldMaxLength(txtName, 30);
+		Constrainsts.setTextFieldMaxLength(txtName, 64);
+		Constrainsts.setTextFielDouble(txtBaseSalary);
+		Constrainsts.setTextFieldMaxLength(txtEmail, 256);
 	}
 
 	public void updateFormData() {
@@ -135,6 +140,11 @@ public class SellerFormController implements Initializable {
 			txtId.setText(String.valueOf(entity.getId()));
 		}
 		txtName.setText(entity.getName());
+		txtEmail.setText(entity.getEmail());
+		dpBirthDate.setValue(entity.getBirthDate() == null ? null
+				: LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
+		Locale.setDefault(Locale.US);
+		txtBaseSalary.setText(String.format("%.2f", entity.getBaseSalary()));
 	}
 
 	private void setErrorsMessages(Map<String, String> errors) {
