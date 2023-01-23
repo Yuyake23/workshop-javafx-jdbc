@@ -1,6 +1,5 @@
 package gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -15,45 +14,41 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.Department;
-import model.services.DepartmentService;
+import model.entities.Seller;
+import model.services.SellerService;
 
-public class DepartmentListController implements Initializable, DataChangeListener {
+public class SellerListController implements Initializable, DataChangeListener {
 
-	private DepartmentService service;
+	private SellerService service;
 
-	public void setService(DepartmentService service) {
+	public void setService(SellerService service) {
 		this.service = service;
 	}
 
-	private Department getSelectedDepartment() {
-		int i = this.tableViewDepartments.getSelectionModel().getFocusedIndex();
-		Department obj = this.tableViewDepartments.getItems().get(i);
+	private Seller getSelectedSeller() {
+		int i = this.tableViewSellers.getSelectionModel().getFocusedIndex();
+		Seller obj = this.tableViewSellers.getItems().get(i);
 		return obj;
 	}
 
 	// Components
 	@FXML
-	private TableView<Department> tableViewDepartments;
-	private ObservableList<Department> obsList;
+	private TableView<Seller> tableViewSellers;
+	private ObservableList<Seller> obsList;
 	@FXML
-	private TableColumn<Department, Integer> tableColumnId;
+	private TableColumn<Seller, Integer> tableColumnId;
 	@FXML
-	private TableColumn<Department, String> tableColumnName;
+	private TableColumn<Seller, String> tableColumnName;
 	@FXML
-	private TableColumn<Department, Department> tableColumnEdit;
+	private TableColumn<Seller, Seller> tableColumnEdit;
 	@FXML
 	private Button btNew;
 	@FXML
@@ -65,14 +60,14 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		Department obj = new Department();
-		createDialogForm("/gui/DepartmentForm.fxml", obj, parentStage);
+		Seller obj = new Seller();
+		createDialogForm("/gui/SellerForm.fxml", obj, parentStage);
 	}
 
 	@FXML
 	public void onBtEditAction(ActionEvent event) {
-		Department obj = getSelectedDepartment();
-		createDialogForm("/gui/DepartmentForm.fxml", obj, Utils.currentStage(event));
+		Seller obj = getSelectedSeller();
+		createDialogForm("/gui/SellerForm.fxml", obj, Utils.currentStage(event));
 	}
 
 	@FXML
@@ -80,7 +75,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		if (service == null) {
 			throw new IllegalStateException("Service is null");
 		}
-		Department obj = getSelectedDepartment();
+		Seller obj = getSelectedSeller();
 
 		Optional<ButtonType> result = Alerts.showConfirmation("Confirmation",
 				"Are you sure to delete %s?".formatted(obj.getName()));
@@ -104,40 +99,40 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		this.tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
-		tableViewDepartments.prefHeightProperty().bind(stage.heightProperty());
+		tableViewSellers.prefHeightProperty().bind(stage.heightProperty());
 	}
 
-	private void createDialogForm(String absoluteName, Department obj, Stage parentStage) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			Pane pane = loader.load();
-
-			DepartmentFormController controller = loader.getController();
-			controller.setDepartment(obj);
-			controller.updateFormData();
-			controller.setService(new DepartmentService());
-			controller.subscribeDataChangeListener(this);
-
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Enter Department data");
-			dialogStage.setScene(new Scene(pane));
-			dialogStage.setResizable(false);
-			dialogStage.initOwner(parentStage);
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.showAndWait();
-		} catch (IOException e) {
-			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
-		}
+	private void createDialogForm(String absoluteName, Seller obj, Stage parentStage) {
+//		try {
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+//			Pane pane = loader.load();
+//
+//			SellerFormController controller = loader.getController();
+//			controller.setSeller(obj);
+//			controller.updateFormData();
+//			controller.setService(new SellerService());
+//			controller.subscribeDataChangeListener(this);
+//
+//			Stage dialogStage = new Stage();
+//			dialogStage.setTitle("Enter Seller data");
+//			dialogStage.setScene(new Scene(pane));
+//			dialogStage.setResizable(false);
+//			dialogStage.initOwner(parentStage);
+//			dialogStage.initModality(Modality.WINDOW_MODAL);
+//			dialogStage.showAndWait();
+//		} catch (IOException e) {
+//			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+//		}
 	}
 
 	public void updateTableView() {
 		if (service == null) {
 			throw new IllegalStateException("Service is null");
 		}
-		List<Department> list = service.findAll();
+		List<Seller> list = service.findAll();
 		list.sort((d1, d2) -> d1.getId() - d2.getId());
 		this.obsList = FXCollections.observableArrayList(list);
-		this.tableViewDepartments.setItems(obsList);
+		this.tableViewSellers.setItems(obsList);
 	}
 
 	@Override

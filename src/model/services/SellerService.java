@@ -3,18 +3,18 @@ package model.services;
 import java.util.List;
 
 import model.dao.DAOFactory;
-import model.dao.DepartmentDAO;
-import model.entities.Department;
+import model.dao.SellerDAO;
+import model.entities.Seller;
 
-public class DepartmentService {
+public class SellerService {
 
-	private DepartmentDAO dao = DAOFactory.createDepartmentDAO();
+	private SellerDAO dao = DAOFactory.createSellerDAO();
 
-	public List<Department> findAll() {
+	public List<Seller> findAll() {
 		return dao.findAll();
 	}
 
-	public void saveOrUpdate(Department obj) {
+	public void saveOrUpdate(Seller obj) {
 		if (obj.getId() == null) {
 			dao.insert(obj);
 		} else {
