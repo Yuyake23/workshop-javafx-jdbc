@@ -9,7 +9,6 @@ import application.Main;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,6 +47,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, Department> tableColumnEdit;
 	@FXML
 	private Button btNew;
+	@FXML
+	private Button btEdit;
 
 	// Actions
 	@FXML
@@ -56,6 +56,14 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		Stage parentStage = Utils.currentStage(event);
 		Department obj = new Department();
 		createDialogForm("/gui/DepartmentForm.fxml", obj, parentStage);
+	}
+
+	@FXML
+	public void onBtEditAction(ActionEvent event) {
+		int i = this.tableViewDepartments.getSelectionModel().getFocusedIndex();
+		System.out.println(i);
+		Department obj = this.tableViewDepartments.getItems().get(i);
+		createDialogForm("/gui/DepartmentForm.fxml", obj, Utils.currentStage(event));
 	}
 
 	@Override
@@ -66,29 +74,9 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private void initializeNodes() {
 		this.tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		this.tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-		this.initializeEditButtons();
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartments.prefHeightProperty().bind(stage.heightProperty());
-	}
-
-	private void initializeEditButtons() {
-		this.tableColumnEdit.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		this.tableColumnEdit.setCellFactory(param -> new TableCell<Department, Department>() {
-			private final Button button = new Button("edit");
-
-			@Override
-			protected void updateItem(Department obj, boolean empty) {
-				super.updateItem(obj, empty);
-				if (obj == null) {
-					setGraphic(null);
-				} else {
-					setGraphic(button);
-					this.button.setOnAction(
-							event -> createDialogForm("/gui/DepartmentForm.fxml", obj, Utils.currentStage(event)));
-				}
-			}
-		});
 	}
 
 	private void createDialogForm(String absoluteName, Department obj, Stage parentStage) {
