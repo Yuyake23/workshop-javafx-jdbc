@@ -51,6 +51,7 @@
             <TableColumn fx:id="tableColumnEmail" prefWidth="140.0" text="Email" />
             <TableColumn fx:id="tableColumnBirthDate" prefWidth="75.0" text="BirthDate" />
             <TableColumn fx:id="tableColumnBaseSalary" prefWidth="75.0" text="Base Salary" />
+            <TableColumn fx:id="tableColumnDepartment" prefWidth="92.80007934570312" text="Department" />
         </columns>
       </TableView>
    </children>

@@ -78,6 +78,20 @@ public class Utils {
 		});
 	}
 
+	public static <T, E> void formatTableColumn(TableColumn<T, E> tableColumn, Function<E, String> how) {
+		tableColumn.setCellFactory(column -> new TableCell<T, E>() {
+			@Override
+			protected void updateItem(E item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+				} else {
+					setText(how.apply(item));
+				}
+			}
+		});
+	}
+
 	public static void formatDatePicker(DatePicker datePicker, String format) {
 		datePicker.setConverter(new StringConverter<LocalDate>() {
 
